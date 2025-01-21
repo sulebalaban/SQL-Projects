@@ -1,4 +1,0 @@
-EmpID;Name;FirstCheckInTime;LastCheckOutTime;TotalOutCount;TotalWorkHours
-1;Him;"2024-01-03 10:08:00";"2024-01-03 18:08:00";3;6:07
-2;Raj;"2024-01-03 10:10:00";"2024-01-03 15:12:00";2;4:49
-3;Anu;"2024-01-03 10:12:00";"2024-01-03 18:35:00";2;8:18
