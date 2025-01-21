@@ -3,7 +3,7 @@ USE attendance_db;
 
 CREATE TABLE employee_attendance (
 EmpID INT,
-Name VARCHAR(50),
+Name VARCHAR(60),
 CheckInOutTime DATETIME,
 Attendance CHAR(3)
 );
