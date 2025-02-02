@@ -73,17 +73,16 @@ BEGIN
     DECLARE subid VARCHAR(50);
     DECLARE pref INT;
     
-    -- Cursor to iterate over students sorted by GPA (descending)
     DECLARE student_cursor CURSOR FOR 
         SELECT sp.Studentid, sp.Subjectid, sp.Preference
         FROM StudentPreference sp
         JOIN StudentDetails sd ON sp.Studentid = sd.Studentid
         ORDER BY sd.GPA DESC, sp.Preference ASC;
     
-    -- Declare a handler to exit loop
+   
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
     
-    -- Create temporary table to track assigned students
+    
     CREATE TEMPORARY TABLE TempAssignedStudents (Studentid INT PRIMARY KEY);
     
     OPEN student_cursor;
@@ -94,19 +93,19 @@ BEGIN
             LEAVE read_loop; 
         END IF;
         
-        -- Check if student is already assigned
+        
         IF NOT EXISTS (SELECT 1 FROM TempAssignedStudents WHERE Studentid = sid) THEN
-            -- Check if the subject has available seats
+            
             IF (SELECT RemainingSeats FROM SubjectDetails WHERE Subjectid = subid) > 0 THEN
-                -- Assign student to the subject
+               
                 INSERT INTO Allotments (Subjectid, Studentid) VALUES (subid, sid);
                 
-                -- Decrease remaining seats
+               
                 UPDATE SubjectDetails 
                 SET RemainingSeats = RemainingSeats - 1 
                 WHERE Subjectid = subid;
                 
-                -- Mark student as assigned
+                
                 INSERT INTO TempAssignedStudents (Studentid) VALUES (sid);
             END IF;
         END IF;
@@ -114,7 +113,7 @@ BEGIN
     
     CLOSE student_cursor;
     
-    -- Insert unassigned students into UnallotedStudents table
+  
     INSERT INTO UnallotedStudents (Studentid)
     SELECT sd.Studentid 
     FROM StudentDetails sd
@@ -123,7 +122,6 @@ BEGIN
         WHERE a.Studentid = sd.Studentid
     );
 
-    -- Drop temporary table
     DROP TEMPORARY TABLE IF EXISTS TempAssignedStudents;
 END $$
 
