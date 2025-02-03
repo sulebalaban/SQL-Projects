@@ -32,11 +32,11 @@ BEGIN
     DECLARE RequestedSubjectID VARCHAR(50);
     DECLARE CurrentSubjectID VARCHAR(50);
 
-    -- Declare cursor
+   
     DECLARE request_cursor CURSOR FOR
     SELECT StudentID, SubjectID FROM SubjectRequest;
 
-    -- Declare continue handler
+  
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
 
     OPEN request_cursor;
@@ -48,7 +48,7 @@ BEGIN
             LEAVE read_loop;
         END IF;
 
-        -- Checking if the student already has an active subject
+       
         SELECT SubjectID INTO CurrentSubjectID
         FROM SubjectAllotments
         WHERE StudentID = StudentID AND Is_Valid = 1
@@ -56,17 +56,17 @@ BEGIN
 
         IF CurrentSubjectID IS NOT NULL THEN
             IF CurrentSubjectID <> RequestedSubjectID THEN
-                -- Deactivate the current subject
+               
                 UPDATE SubjectAllotments
                 SET Is_Valid = 0
                 WHERE StudentID = StudentID AND Is_Valid = 1;
 
-                -- Insert the new requested subject as valid
+               
                 INSERT INTO SubjectAllotments (StudentID, SubjectID, Is_Valid)
                 VALUES (StudentID, RequestedSubjectID, 1);
             END IF;
         ELSE
-            -- If no active subject exists, insert the requested subject as valid
+            
             INSERT INTO SubjectAllotments (StudentID, SubjectID, Is_Valid)
             VALUES (StudentID, RequestedSubjectID, 1);
         END IF;
@@ -75,7 +75,7 @@ BEGIN
 
     CLOSE request_cursor;
 
-    -- Clearing the SubjectRequest table after processing
+    
     TRUNCATE TABLE SubjectRequest;
 
 END $$
@@ -83,6 +83,4 @@ END $$
 DELIMITER ;
 
  CALL ProcessSubjectRequest();
- 
- SELECT * FROM SubjectAlloments ;
  
