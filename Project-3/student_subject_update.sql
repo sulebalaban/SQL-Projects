@@ -81,6 +81,3 @@ BEGIN
 END $$
 
 DELIMITER ;
-
- CALL ProcessSubjectRequest();
- 
